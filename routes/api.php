@@ -34,10 +34,11 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
-    Route::post('/stores', [StoreController::class, 'store']); // Create Store
-Route::get('/stores', [StoreController::class, 'index']); // Get all Stores
-Route::get('/stores/{id}', [StoreController::class, 'show']); // Get a single Store with its Stocks
+    Route::post('/stores', [StoreController::class, 'store']); 
+Route::get('/stores', [StoreController::class, 'index']);
+Route::get('/stores/{id}', [StoreController::class, 'show']); 
 
-    Route::get('/stocks', [StockController::class, 'index']);
-    Route::post('/stocks', [StockController::class, 'store']);
+Route::get('/stocks', [StockController::class, 'index']);
+Route::post('/stocks', [StockController::class, 'store']);
+Route::delete('/stocks/{id}', [StockController::class, 'destroy']);
 });

@@ -52,8 +52,13 @@ public function login(Request $request)
 
     $token = $user->createToken('StockApp')->accessToken;
 
-    return response()->json(['token' => $token], 200);
+    return response()->json([
+        'token' => $token,
+        'user' => $user->makeHidden(['password', 'remember_token']),
+    ], 200);
+    
 }
+
 
 
 }

@@ -8,22 +8,40 @@ use App\Models\Stock;
 
 class StockController extends Controller
 {
+
     public function index(Request $request)
     {
+        Log::info('Request Parameters:', $request->all());
+    
         $query = Stock::with('store');
-
-        // Tabulator pagination and sorting
-        if ($request->has('sort')) {
-            $sort = json_decode($request->sort)[0];
-            $query->orderBy($sort->field, $sort->dir);
+    
+        if ($request->has('sortField') && $request->has('sortDirection')) {
+            $sortField = $request->sortField;
+            $sortDirection = $request->sortDirection;
+            $query->orderBy($sortField, $sortDirection);
         } else {
             $query->orderBy('created_at', 'desc');
         }
-
+    
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('item_code', 'like', '%' . $search . '%')
+                  ->orWhere('item_name', 'like', '%' . $search . '%')
+                  ->orWhere('location', 'like', '%' . $search . '%');
+            });
+        }
+    
+        // Pagination size
         $perPage = $request->get('size', 10);
-        return $query->paginate($perPage);
+        $stocks = $query->paginate($perPage);
+    
+        Log::info('Fetched Stocks:', $stocks->toArray());
+    
+        return response()->json($stocks);
     }
-
+    
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -48,5 +66,16 @@ class StockController extends Controller
         }
 
         return response()->json(['message' => 'Stock entries saved successfully']);
+    }
+
+    public function destroy($id)
+    {
+        $stock = Stock::find($id);
+        if ($stock) {
+            $stock->delete();
+            return response()->json(['message' => 'Stock entry deleted successfully']);
+        } else {
+            return response()->json(['message' => 'Stock entry not found'], 404);
+        }
     }
 }
