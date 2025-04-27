@@ -17,7 +17,7 @@ class StockController extends Controller
             $sort = json_decode($request->sort)[0];
             $query->orderBy($sort->field, $sort->dir);
         } else {
-            $query->orderBy('created_at', 'desc'); // Default sort
+            $query->orderBy('created_at', 'desc');
         }
 
         $perPage = $request->get('size', 10);

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Stock; // Ensure you import the Stock model
+use App\Models\Stock;
 use Illuminate\Console\Command;
 
 class UpdateStockStatus extends Command
@@ -12,14 +12,14 @@ class UpdateStockStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'stock:update-status'; // Define the command signature
+    protected $signature = 'stock:update-status'; 
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Update stocks status to In-Stock if the in-stock date matches the current date'; // Provide a description
+    protected $description = 'Update stocks status to In-Stock if the in-stock date matches the current date'; 
 
     /**
      * Create a new command instance.
@@ -39,7 +39,7 @@ class UpdateStockStatus extends Command
     public function handle()
     {
         // Get today's date
-        $today = now()->toDateString(); // Get the current date in 'YYYY-MM-DD' format
+        $today = now()->toDateString(); 
 
         // Update the stock status where the in-stock date matches today's date
         $updatedCount = Stock::where('in_stock_date', $today)

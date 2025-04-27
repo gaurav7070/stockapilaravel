@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\UpdateStockStatus; // Import your custom command
+use App\Console\Commands\UpdateStockStatus;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
