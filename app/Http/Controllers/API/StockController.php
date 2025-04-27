@@ -10,37 +10,30 @@ class StockController extends Controller
 {
 
     public function index(Request $request)
-    {
-        Log::info('Request Parameters:', $request->all());
-    
-        $query = Stock::with('store');
-    
-        if ($request->has('sortField') && $request->has('sortDirection')) {
-            $sortField = $request->sortField;
-            $sortDirection = $request->sortDirection;
-            $query->orderBy($sortField, $sortDirection);
-        } else {
-            $query->orderBy('created_at', 'desc');
-        }
-    
-        if ($request->has('search') && $request->search !== '') {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('item_code', 'like', '%' . $search . '%')
-                  ->orWhere('item_name', 'like', '%' . $search . '%')
-                  ->orWhere('location', 'like', '%' . $search . '%');
-            });
-        }
-    
-        // Pagination size
-        $perPage = $request->get('size', 10);
-        $stocks = $query->paginate($perPage);
-    
-        Log::info('Fetched Stocks:', $stocks->toArray());
-    
-        return response()->json($stocks);
+{
+    $query = Stock::with('store');
+
+    if ($request->has('sortField') && $request->has('sortDirection')) {
+        $query->orderBy($request->sortField, $request->sortDirection);
+    } else {
+        $query->orderBy('created_at', 'desc');
     }
-    
+
+    if ($request->has('search') && $request->search !== '') {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('item_code', 'like', '%' . $search . '%')
+              ->orWhere('item_name', 'like', '%' . $search . '%')
+              ->orWhere('location', 'like', '%' . $search . '%');
+        });
+    }
+
+    $perPage = $request->get('size', 10);
+    $stocks = $query->paginate($perPage);
+
+    return response()->json($stocks);
+}
+
     
     public function store(Request $request)
     {
